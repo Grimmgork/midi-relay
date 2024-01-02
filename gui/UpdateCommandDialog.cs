@@ -23,7 +23,9 @@ namespace gui
             InitializeComponent();
             commandTypeComboBox.Items.Add(MidiCommandType.ControlChange);
             commandTypeComboBox.Items.Add(MidiCommandType.ProgramChange);
-            commandTypeComboBox.Items.Add(MidiCommandType.Other);
+            commandTypeComboBox.Items.Add(MidiCommandType.Start);
+            commandTypeComboBox.Items.Add(MidiCommandType.Stop);
+            commandTypeComboBox.Items.Add(MidiCommandType.Continue);
 
             AppliedCommand = command;
         }
@@ -48,8 +50,11 @@ namespace gui
             else
                 SelectedCommandProvider = GetMidiCommandProvider(type, null);
 
+            UserControl control = (UserControl)SelectedCommandProvider;
+            control.Location = new Point(5, 30);
+
             groupBox1.Controls.Clear();
-            groupBox1.Controls.Add((UserControl)SelectedCommandProvider);
+            groupBox1.Controls.Add(control);
         }
 
         private IMidiCommandProvider GetMidiCommandProvider(MidiCommandType type, IMidiCommand? command)
@@ -60,6 +65,14 @@ namespace gui
                     return new MidiControlChangeControl((MidiControlChange?)command);
                 case MidiCommandType.ProgramChange:
                     return new MidiProgramChangeControl((MidiProgramChange?)command);
+                case MidiCommandType.Start:
+                    return new MidiStaticCommandControl(MidiStaticSingleByte.Start());
+                case MidiCommandType.Stop:
+                    return new MidiStaticCommandControl(MidiStaticSingleByte.Stop());
+                case MidiCommandType.Continue:
+                    return new MidiStaticCommandControl(MidiStaticSingleByte.Continue());
+                case MidiCommandType.Other:
+                    return new MidiOtherCommandControl(command);
                 default:
                     throw new NotImplementedException();
             }

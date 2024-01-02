@@ -42,7 +42,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(13, 16);
+            label1.Location = new Point(3, 2);
             label1.Name = "label1";
             label1.Size = new Size(75, 25);
             label1.TabIndex = 0;
@@ -50,32 +50,38 @@
             // 
             // numericUpDown1
             // 
-            numericUpDown1.Location = new Point(140, 16);
-            numericUpDown1.Maximum = new decimal(new int[] { 15, 0, 0, 0 });
+            numericUpDown1.Location = new Point(140, 0);
+            numericUpDown1.Maximum = new decimal(new int[] { 16, 0, 0, 0 });
+            numericUpDown1.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown1.Name = "numericUpDown1";
             numericUpDown1.Size = new Size(149, 31);
             numericUpDown1.TabIndex = 1;
+            numericUpDown1.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // numericUpDown2
             // 
-            numericUpDown2.Location = new Point(140, 53);
-            numericUpDown2.Maximum = new decimal(new int[] { 127, 0, 0, 0 });
+            numericUpDown2.Location = new Point(140, 37);
+            numericUpDown2.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
+            numericUpDown2.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown2.Name = "numericUpDown2";
             numericUpDown2.Size = new Size(149, 31);
             numericUpDown2.TabIndex = 2;
+            numericUpDown2.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // numericUpDown3
             // 
-            numericUpDown3.Location = new Point(140, 90);
-            numericUpDown3.Maximum = new decimal(new int[] { 127, 0, 0, 0 });
+            numericUpDown3.Location = new Point(140, 74);
+            numericUpDown3.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
+            numericUpDown3.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown3.Name = "numericUpDown3";
             numericUpDown3.Size = new Size(149, 31);
             numericUpDown3.TabIndex = 3;
+            numericUpDown3.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(13, 55);
+            label2.Location = new Point(3, 39);
             label2.Name = "label2";
             label2.Size = new Size(90, 25);
             label2.TabIndex = 4;
@@ -84,7 +90,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(13, 90);
+            label3.Location = new Point(3, 76);
             label3.Name = "label3";
             label3.Size = new Size(54, 25);
             label3.TabIndex = 5;
@@ -102,7 +108,7 @@
             Controls.Add(numericUpDown1);
             Controls.Add(label1);
             Name = "MidiControlChangeControl";
-            Size = new Size(304, 135);
+            Size = new Size(299, 117);
             Load += ControlChangeControl_Load;
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown2).EndInit();

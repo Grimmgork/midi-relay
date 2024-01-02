@@ -32,11 +32,11 @@
             label1 = new Label();
             button1 = new Button();
             groupBox1 = new GroupBox();
-            groupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // commandTypeComboBox
             // 
+            commandTypeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             commandTypeComboBox.FormattingEnabled = true;
             commandTypeComboBox.Location = new Point(68, 12);
             commandTypeComboBox.Name = "commandTypeComboBox";
@@ -56,7 +56,7 @@
             // button1
             // 
             button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button1.Location = new Point(267, 326);
+            button1.Location = new Point(282, 233);
             button1.Name = "button1";
             button1.Size = new Size(112, 34);
             button1.TabIndex = 3;
@@ -66,29 +66,28 @@
             // 
             // groupBox1
             // 
+            groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             groupBox1.Location = new Point(12, 51);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(367, 269);
+            groupBox1.Size = new Size(382, 176);
             groupBox1.TabIndex = 4;
             groupBox1.TabStop = false;
-            groupBox1.Text = "Arguments";
+            groupBox1.Text = "Properties";
             // 
             // UpdateCommandDialog
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(391, 372);
+            ClientSize = new Size(406, 279);
             Controls.Add(groupBox1);
             Controls.Add(button1);
             Controls.Add(label1);
             Controls.Add(commandTypeComboBox);
-            FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             Name = "UpdateCommandDialog";
             StartPosition = FormStartPosition.CenterParent;
             Text = "UpdateCommandDialog";
             Load += UpdateCommandDialog_Load;
-            groupBox1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }

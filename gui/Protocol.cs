@@ -23,11 +23,11 @@ namespace gui
     {
         private SerialPort serial;
 
-        public Protocol(string port)
+        public Protocol(string port, int timeout = 1000)
         {
             serial = new SerialPort(port, 31250, Parity.None, 8, StopBits.One);
-            serial.WriteTimeout = 1000;
-            serial.ReadTimeout = 1000;
+            serial.WriteTimeout = timeout;
+            serial.ReadTimeout = timeout;
         }
 
         public void Start()
@@ -65,6 +65,14 @@ namespace gui
             }
 
             return responses.Last();
+        }
+
+        public void Ping()
+        {
+            Message res = Command(new Message(0x33));
+            if (res.Command == 0x06)
+                return;
+            throw new Exception("invalid response!");
         }
 
         public void Dispose()

@@ -10,6 +10,11 @@ namespace gui.MIDI
     {
         ControlChange,
         ProgramChange,
+        SystemExclusive,
+        SongSelect,
+        Start,
+        Stop,
+        Continue,
         Other
     }
 

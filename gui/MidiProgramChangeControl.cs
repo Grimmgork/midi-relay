@@ -20,8 +20,8 @@ namespace gui
             if (command == null)
                 return;
 
-            numericUpDown1.Value = command.Value.Channel;
-            numericUpDown2.Value = command.Value.ProgramNumber;
+            numericUpDown1.Value = command.Value.Channel +1;
+            numericUpDown2.Value = command.Value.ProgramNumber +1;
         }
 
         public bool CanGetMidiCommand()
@@ -33,8 +33,8 @@ namespace gui
         {
             return new MidiProgramChange()
             {
-                Channel = (int)numericUpDown1.Value,
-                ProgramNumber = (int)numericUpDown2.Value
+                Channel = (int)numericUpDown1.Value-1,
+                ProgramNumber = (int)numericUpDown2.Value-1
             };
         }
     }

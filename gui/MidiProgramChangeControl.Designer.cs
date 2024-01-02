@@ -39,10 +39,12 @@
             // numericUpDown1
             // 
             numericUpDown1.Location = new Point(111, 3);
-            numericUpDown1.Maximum = new decimal(new int[] { 15, 0, 0, 0 });
+            numericUpDown1.Maximum = new decimal(new int[] { 16, 0, 0, 0 });
+            numericUpDown1.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown1.Name = "numericUpDown1";
             numericUpDown1.Size = new Size(129, 31);
             numericUpDown1.TabIndex = 0;
+            numericUpDown1.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // label1
             // 
@@ -56,10 +58,12 @@
             // numericUpDown2
             // 
             numericUpDown2.Location = new Point(111, 40);
-            numericUpDown2.Maximum = new decimal(new int[] { 127, 0, 0, 0 });
+            numericUpDown2.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
+            numericUpDown2.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown2.Name = "numericUpDown2";
             numericUpDown2.Size = new Size(129, 31);
             numericUpDown2.TabIndex = 2;
+            numericUpDown2.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // label2
             // 

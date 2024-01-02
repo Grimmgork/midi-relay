@@ -30,6 +30,20 @@ namespace gui
             res = MidiControlChange.FromSequence(Sequence);
             if (res != null)
                 return res;
+
+            if(Sequence.Length == 1)
+            {
+                switch(Sequence[0])
+                {
+                    case 0xFA:
+                        return MidiStaticSingleByte.Start();
+                    case 0xFB:
+                        return MidiStaticSingleByte.Continue();
+                    case 0xFC:
+                        return MidiStaticSingleByte.Stop();
+                }
+            }
+
             return MidiOtherCommand.FromSequence(Sequence)!;
         }
 
@@ -44,10 +58,19 @@ namespace gui
             switch (midicmd!.GetMidiCommandType())
             {
                 case MidiCommandType.ControlChange:
-                    cmd = $"CC {((MidiControlChange) midicmd).Channel} {((MidiControlChange)midicmd).ControllerNumber} {((MidiControlChange)midicmd).Value}";
+                    cmd = $"CC {((MidiControlChange) midicmd).Channel+1} {((MidiControlChange)midicmd).ControllerNumber+1} {((MidiControlChange)midicmd).Value+1}";
                     break;
                 case MidiCommandType.ProgramChange:
-                    cmd = $"PC {((MidiProgramChange)midicmd).Channel} {((MidiProgramChange)midicmd).ProgramNumber}";
+                    cmd = $"PC {((MidiProgramChange)midicmd).Channel+1} {((MidiProgramChange)midicmd).ProgramNumber+1}";
+                    break;
+                case MidiCommandType.Start:
+                    cmd = "start";
+                    break;
+                case MidiCommandType.Stop:
+                    cmd = "stop";
+                    break;
+                case MidiCommandType.Continue:
+                    cmd = "continue";
                     break;
                 case MidiCommandType.Other:
                     cmd = $"[{RenderHexSequence(Sequence)}]";

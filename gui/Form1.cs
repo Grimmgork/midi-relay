@@ -8,32 +8,29 @@ namespace gui;
 
 public partial class Form1 : Form
 {
+    private string? selectedPort = null;
+
+    string? errormsg = null;
     bool busy = false;
     bool error = false;
 
     public Form1()
     {
         InitializeComponent();
-        serialPortComboBox.DropDown += SerialPortComboBox_DropDown;
+        deviceToolStripMenuItem.DropDownOpening += DeviceToolStripMenuItem_DropDownOpening;
     }
 
-    private void SerialPortComboBox_DropDown(object? sender, EventArgs e)
+    private void DeviceToolStripMenuItem_DropDownOpening(object? sender, EventArgs e)
     {
-        int index = serialPortComboBox.SelectedIndex;
-        serialPortComboBox.Items.Clear();
-        serialPortComboBox.Items.AddRange(SerialPort.GetPortNames());
-        if (index >= serialPortComboBox.Items.Count)
-            serialPortComboBox.SelectedIndex = index;
-        else
-            serialPortComboBox.SelectedIndex = 0;
+        PopulateDeviceDropdown();
     }
 
     private void StateHasChanged()
     {
         toolStripStatusLabel.Text = busy ? "busy" : error ? "error" : "done";
-        loadDataButton.Enabled = (!busy);
+        toolStripStatusLabel.ToolTipText = errormsg;
         clearCommandButton.Enabled = (!busy);
-        Refresh();
+        serialPortStatusLabel.Text = selectedPort;
     }
 
     private void Form1_Load(object sender, EventArgs e)
@@ -41,9 +38,29 @@ public partial class Form1 : Form
         StateHasChanged();
     }
 
-    private void loadDataButton_Click(object sender, EventArgs e)
+    private bool Busy(Action action)
     {
-        LoadButtonData();
+        error = false;
+        errormsg = null;
+        busy = true;
+        System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
+        StateHasChanged();
+        try
+        {
+            action.Invoke();
+        }
+        catch(Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            errormsg = ex.Message;
+            error = true;
+        }
+        busy = false;
+        System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
+        StateHasChanged();
+        if (error)
+            return false;
+        return true;
     }
 
     private void editButton_Click(object sender, EventArgs e)
@@ -52,46 +69,90 @@ public partial class Form1 : Form
         if (buttonIndex < 0)
             return;
 
+        if (selectedPort == null)
+            return;
+
         UpdateCommandDialog dialog = new UpdateCommandDialog(((ButtonConfiguration)buttonOverviewListBox.Items[buttonIndex]).ParseCommand());
         DialogResult result = dialog.ShowDialog();
-        if(result != DialogResult.OK)
+        if (result != DialogResult.OK)
             return;
 
         IMidiCommand updatedCommand = dialog.AppliedCommand!;
 
-        busy = true;
-        StateHasChanged();
-        Protocol p = new Protocol((string)serialPortComboBox.SelectedItem);
-        try
+        Protocol p = new Protocol(selectedPort);
+        Busy(() =>
         {
             p.Start();
-            Message res = p.Command(new Message(0x30, updatedCommand.GetSequence().Prepend((byte)buttonOverviewListBox.SelectedIndex).ToArray() ));
+            Message res = p.Command(new Message(0x30, updatedCommand.GetSequence().Prepend((byte)buttonOverviewListBox.SelectedIndex).ToArray()));
             if (res.Command != 0x06)
                 throw new Exception();
-        }
-        catch (Exception ex)
-        {
-            error = true;
-        }
+        });
         p.Dispose();
-        busy = false;
-        StateHasChanged();
 
-        if(!error)
-            LoadButtonData();
+        if (!error)
+            LoadConfiguration();
     }
 
-    private void LoadButtonData()
+    private void PopulateDeviceDropdown()
     {
-        busy = true;
-        error = false;
+        deviceToolStripMenuItem.DropDown.Items.Clear();
+        string[] names = SerialPort.GetPortNames();
+        deviceToolStripMenuItem.DropDown.Items.Add("find", null, (object? sender, EventArgs e) =>
+        {
+            Busy(() =>
+            {
+                selectedPort = null;
+                foreach (string name in names)
+                {
+                    try
+                    {
+                        Protocol p = new Protocol(name, 500);
+                        p.Start();
+                        p.Ping();
+                        p.Dispose();
+                        selectedPort = name;
+                    }
+                    catch (Exception ex)
+                    {
 
+                    }
+                }
+
+                if (selectedPort == null)
+                    throw new Exception("could not find a suitable device!");
+
+                LoadConfiguration();
+            });
+            if (error)
+                selectedPort = null;
+            StateHasChanged();
+        });
+        foreach(string name in names)
+        {
+            ToolStripMenuItem item = new ToolStripMenuItem(name);
+            if (selectedPort == name)
+                item.Checked = true;
+            item.Click += (object? sender, EventArgs e) => 
+            {
+                selectedPort = name;
+                LoadConfiguration();
+                if (error)
+                    selectedPort = null;
+                StateHasChanged();
+            };
+            deviceToolStripMenuItem.DropDown.Items.Add(item);
+        }
+    }
+
+    private void LoadConfiguration()
+    {
         buttonOverviewListBox.Items.Clear();
         buttonOverviewListBox.SelectedIndex = -1;
-        StateHasChanged();
+        if (selectedPort == null)
+            return;
 
-        Protocol p = new Protocol((string)serialPortComboBox.SelectedItem);
-        try
+        Protocol p = new Protocol(selectedPort);
+        Busy(() =>
         {
             p.Start();
             byte i = 0;
@@ -103,51 +164,33 @@ public partial class Form1 : Form
 
                 buttonOverviewListBox.Items.Add(new ButtonConfiguration(i, res.Content));
             }
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.Message);
-            p.Dispose();
-            busy = false;
-            error = true;
-            StateHasChanged();
-            return;
-        }
-
-        if (buttonOverviewListBox.SelectedIndex == -1 && buttonOverviewListBox.Items.Count > 0)
-            buttonOverviewListBox.SelectedIndex = 0;
-
-        if (buttonOverviewListBox.Items.Count > buttonOverviewListBox.SelectedIndex)
-            buttonOverviewListBox.SelectedIndex = 0;
+        });
 
         p.Dispose();
 
-        busy = false;
-        StateHasChanged();
+        if (!error)
+        {
+            if(buttonOverviewListBox.Items.Count > 0)
+                buttonOverviewListBox.SelectedIndex = 0;
+        }
     }
 
     private void clearCommandButton_Click(object sender, EventArgs e)
     {
-        error = false;
-        busy = true;
-        StateHasChanged();
-        Protocol p = new Protocol((string)serialPortComboBox.SelectedItem);
-        try
+        if (selectedPort == null)
+            return;
+
+        Protocol p = new Protocol(selectedPort);
+        Busy(() => 
         {
             p.Start();
             Message res = p.Command(new Message(0x30, (byte)buttonOverviewListBox.SelectedIndex));
             if (res.Command != 0x06)
                 throw new Exception();
-        }
-        catch(Exception ex)
-        {
-            error = true;
-        }
+        });
         p.Dispose();
-        busy = false;
-        StateHasChanged();
-
-        if(!error)
-            LoadButtonData();
+        if (!error)
+            LoadConfiguration();
     }
+
 }
