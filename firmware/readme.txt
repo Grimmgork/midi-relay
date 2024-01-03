@@ -22,3 +22,27 @@ wert 55
 00110111 0x
 
 test
+
+
+cmd l data l data l data 0
+
+# config
+char $control_channel_overwrite 255
+char *button_a_up
+char *button_a_down
+char *button_b_up
+char *button_b_down
+char *button_c_up
+char *button_c_down
+char *button_c_up
+char *button_d_down
+char *button_d_up
+
+sequence:
+char length
+char *buffer
+
+buffer_buffer_buffer_buffer
+
+if(status > b1000nnnn )
+	apply $control_channel

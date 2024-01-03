@@ -49,10 +49,10 @@ partial class Form1
         // 
         statusStrip1.ImageScalingSize = new Size(24, 24);
         statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel, serialPortStatusLabel });
-        statusStrip1.Location = new Point(0, 340);
+        statusStrip1.Location = new Point(0, 262);
         statusStrip1.Name = "statusStrip1";
         statusStrip1.ShowItemToolTips = true;
-        statusStrip1.Size = new Size(568, 32);
+        statusStrip1.Size = new Size(478, 32);
         statusStrip1.SizingGrip = false;
         statusStrip1.TabIndex = 7;
         statusStrip1.Text = "statusStrip1";
@@ -82,8 +82,8 @@ partial class Form1
         // 
         // editButton
         // 
-        editButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        editButton.Location = new Point(444, 85);
+        editButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        editButton.Location = new Point(354, 85);
         editButton.Name = "editButton";
         editButton.Size = new Size(112, 34);
         editButton.TabIndex = 11;
@@ -101,13 +101,13 @@ partial class Form1
         buttonOverviewListBox.ItemHeight = 22;
         buttonOverviewListBox.Location = new Point(12, 45);
         buttonOverviewListBox.Name = "buttonOverviewListBox";
-        buttonOverviewListBox.Size = new Size(426, 286);
+        buttonOverviewListBox.Size = new Size(336, 208);
         buttonOverviewListBox.TabIndex = 19;
         // 
         // clearCommandButton
         // 
-        clearCommandButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        clearCommandButton.Location = new Point(444, 45);
+        clearCommandButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        clearCommandButton.Location = new Point(354, 45);
         clearCommandButton.Name = "clearCommandButton";
         clearCommandButton.Size = new Size(112, 34);
         clearCommandButton.TabIndex = 24;
@@ -121,7 +121,7 @@ partial class Form1
         menuStrip1.Items.AddRange(new ToolStripItem[] { deviceToolStripMenuItem });
         menuStrip1.Location = new Point(0, 0);
         menuStrip1.Name = "menuStrip1";
-        menuStrip1.Size = new Size(568, 33);
+        menuStrip1.Size = new Size(478, 33);
         menuStrip1.TabIndex = 26;
         menuStrip1.Text = "menuStrip1";
         // 
@@ -135,13 +135,13 @@ partial class Form1
         // findToolStripMenuItem
         // 
         findToolStripMenuItem.Name = "findToolStripMenuItem";
-        findToolStripMenuItem.Size = new Size(270, 34);
+        findToolStripMenuItem.Size = new Size(167, 34);
         findToolStripMenuItem.Text = "find";
         // 
         // asdToolStripMenuItem
         // 
         asdToolStripMenuItem.Name = "asdToolStripMenuItem";
-        asdToolStripMenuItem.Size = new Size(270, 34);
+        asdToolStripMenuItem.Size = new Size(167, 34);
         asdToolStripMenuItem.Text = "asd";
         // 
         // adawdToolStripMenuItem
@@ -149,14 +149,14 @@ partial class Form1
         adawdToolStripMenuItem.Checked = true;
         adawdToolStripMenuItem.CheckState = CheckState.Checked;
         adawdToolStripMenuItem.Name = "adawdToolStripMenuItem";
-        adawdToolStripMenuItem.Size = new Size(270, 34);
+        adawdToolStripMenuItem.Size = new Size(167, 34);
         adawdToolStripMenuItem.Text = "adawd";
         // 
         // splitter1
         // 
         splitter1.Location = new Point(0, 33);
         splitter1.Name = "splitter1";
-        splitter1.Size = new Size(4, 307);
+        splitter1.Size = new Size(4, 229);
         splitter1.TabIndex = 27;
         splitter1.TabStop = false;
         // 
@@ -164,7 +164,7 @@ partial class Form1
         // 
         AutoScaleDimensions = new SizeF(10F, 25F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(568, 372);
+        ClientSize = new Size(478, 294);
         Controls.Add(splitter1);
         Controls.Add(clearCommandButton);
         Controls.Add(editButton);

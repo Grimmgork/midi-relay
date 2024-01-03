@@ -97,7 +97,7 @@ public partial class Form1 : Form
     {
         deviceToolStripMenuItem.DropDown.Items.Clear();
         string[] names = SerialPort.GetPortNames();
-        deviceToolStripMenuItem.DropDown.Items.Add("find", null, (object? sender, EventArgs e) =>
+        deviceToolStripMenuItem.DropDown.Items.Add("Find", Icons.SearchList, (object? sender, EventArgs e) =>
         {
             Busy(() =>
             {
@@ -131,7 +131,7 @@ public partial class Form1 : Form
         {
             ToolStripMenuItem item = new ToolStripMenuItem(name);
             if (selectedPort == name)
-                item.Checked = true;
+                item.Image = Icons.Checkmark;
             item.Click += (object? sender, EventArgs e) => 
             {
                 selectedPort = name;
