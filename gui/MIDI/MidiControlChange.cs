@@ -4,48 +4,50 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace gui.MIDI
+namespace gui.Midi
 {
-    public struct MidiControlChange : IMidiCommand
+    public class MidiControlChange : IMidiCommand
     {
-        public int Channel;
-        public int ControllerNumber;
-        public int Value;
+        public readonly byte ControlChannel;
+        public readonly byte ControllerNumber;
+        public readonly byte Value;
 
-        public static MidiControlChange? FromSequence(params byte[] sequence)
+        public MidiControlChange(byte channel, byte controllerNumber, byte value)
+        {
+            if (channel > 15)
+                throw new Exception("channel must not be larger than 15");
+
+            if (controllerNumber > 127)
+                throw new Exception("controllerNumber must not be larger than 127");
+
+            if (value > 127)
+                throw new Exception("value must not be larger than 127");
+
+            ControlChannel = channel;
+            ControllerNumber = controllerNumber;
+            Value = value;
+        }
+
+        public byte[] ToSequence()
+        {
+            return new byte[] { (byte)(176 + ControlChannel), ControllerNumber, Value };
+        }
+
+        public static MidiControlChange? FromSequence(byte[] sequence)
         {
             if (sequence.Length != 3)
                 return null;
 
-            MidiControlChange res = new MidiControlChange();
-            res.Channel = sequence[0] - 176;
-            res.ControllerNumber = sequence[1];
-            res.Value = sequence[2];
-            if (!res.IsValid())
+            if (sequence[0] < 176 || sequence[0] > 176 + 15)
                 return null;
 
-            return res;
-        }
+            if (sequence[1] > 127)
+                return null;
 
-        public MidiCommandType GetMidiCommandType()
-        {
-            return MidiCommandType.ControlChange;
-        }
+            if (sequence[2] > 127)
+                return null;
 
-        public byte[] GetSequence()
-        {
-            return new byte[] { (byte)(176 + Channel), (byte)ControllerNumber, (byte)Value };
-        }
-
-        public bool IsValid()
-        {
-            if (Channel < 0 || Channel > 15)
-                return false;
-            if (ControllerNumber < 0 || ControllerNumber > 127)
-                return false;
-            if (Value < 0 || Value > 127)
-                return false;
-            return true;
+            return new MidiControlChange((byte)(sequence[0] - 176), sequence[1], sequence[3]);
         }
     }
 }
