@@ -13,12 +13,17 @@ namespace gui;
 [RequiresPreviewFeatures]
 public partial class MainForm : Form
 {
+    private readonly string windowTitle = "EC5 MIDI Controller";
+    private readonly string version = "v0.1";
+
     private MainViewModel model;
     private MainController controller;
 
     public MainForm()
     {
         InitializeComponent();
+        Text = $"{windowTitle} - {version}";
+
         model = new MainViewModel();
         controller = new MainController(model);
 
@@ -28,7 +33,10 @@ public partial class MainForm : Form
         buttonOverviewListBox.SelectedIndexChanged += ButtonOverviewListBox_SelectedIndexChanged;
         model.Device.PropertyChanged += Device_PropertyChanged;
 
-        controlChannelInput.DataBindings.Add("Value", model.Device, "ControlChannel");
+        Binding controlChannelBinding = new Binding("Value", model.Device, "ControlChannel");
+        controlChannelBinding.Format += ControlChannelBind_Format;
+        controlChannelBinding.Parse += ControlChannelBind_Parse;
+        controlChannelInput.DataBindings.Add(controlChannelBinding);
 
         controlChannelInput.Leave += ControlChannelInput_Leave;
         buttonProgramChangeInput.Leave += ButtonProgramChangeInput_Leave;
@@ -38,6 +46,18 @@ public partial class MainForm : Form
 
         controller.SelectButton(-1);
         controller.SelectDevice(null);
+    }
+
+    private void ControlChannelBind_Parse(object? sender, ConvertEventArgs e)
+    {
+        byte channel = Convert.ToByte(e.Value!);
+        e.Value = channel - 1;
+    }
+
+    private void ControlChannelBind_Format(object? sender, ConvertEventArgs e)
+    {
+        byte channel = (byte) e.Value!;
+        e.Value = channel + 1;
     }
 
     private void Device_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -182,7 +202,7 @@ public partial class MainForm : Form
         else
         {
             return $"{name} -";
-        }   
+        }
     }
 
     private void OnSearchDevice_Clicked(object? sender, EventArgs args)
@@ -195,14 +215,19 @@ public partial class MainForm : Form
     {
         if (sender is ToolStripItem item)
         {
-            controller.DoBusyWork(() => 
+            controller.DoBusyWork(() =>
                 controller.SelectDevice(item.Text));
         }
     }
 
     private void submitButton_Click(object sender, EventArgs e)
     {
-        controller.DoBusyWork(() => 
+        controller.DoBusyWork(() =>
             controller.WriteConfigurationToDevice());
+    }
+
+    private void closeButton_Click(object sender, EventArgs e)
+    {
+        this.Close();
     }
 }
