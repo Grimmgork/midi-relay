@@ -58,11 +58,10 @@ partial class MainForm
         // 
         statusStrip1.ImageScalingSize = new Size(24, 24);
         statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel, serialPortStatusLabel, selectedButtonStatusLabel });
-        statusStrip1.Location = new Point(0, 474);
+        statusStrip1.Location = new Point(0, 373);
         statusStrip1.Name = "statusStrip1";
-        statusStrip1.Padding = new Padding(1, 0, 18, 0);
         statusStrip1.ShowItemToolTips = true;
-        statusStrip1.Size = new Size(742, 42);
+        statusStrip1.Size = new Size(571, 32);
         statusStrip1.SizingGrip = false;
         statusStrip1.TabIndex = 7;
         statusStrip1.Text = "statusStrip1";
@@ -71,19 +70,19 @@ partial class MainForm
         // 
         toolStripStatusLabel.AutoToolTip = true;
         toolStripStatusLabel.Name = "toolStripStatusLabel";
-        toolStripStatusLabel.Size = new Size(70, 32);
+        toolStripStatusLabel.Size = new Size(53, 25);
         toolStripStatusLabel.Text = "Hello";
         toolStripStatusLabel.ToolTipText = "Error occured";
         // 
         // serialPortStatusLabel
         // 
         serialPortStatusLabel.Name = "serialPortStatusLabel";
-        serialPortStatusLabel.Size = new Size(0, 32);
+        serialPortStatusLabel.Size = new Size(0, 25);
         // 
         // selectedButtonStatusLabel
         // 
         selectedButtonStatusLabel.Name = "selectedButtonStatusLabel";
-        selectedButtonStatusLabel.Size = new Size(0, 32);
+        selectedButtonStatusLabel.Size = new Size(0, 25);
         // 
         // menuStrip1
         // 
@@ -91,8 +90,7 @@ partial class MainForm
         menuStrip1.Items.AddRange(new ToolStripItem[] { deviceToolStripMenuItem });
         menuStrip1.Location = new Point(0, 0);
         menuStrip1.Name = "menuStrip1";
-        menuStrip1.Padding = new Padding(8, 3, 0, 3);
-        menuStrip1.Size = new Size(742, 42);
+        menuStrip1.Size = new Size(571, 33);
         menuStrip1.TabIndex = 26;
         menuStrip1.Text = "menuStrip1";
         // 
@@ -100,19 +98,19 @@ partial class MainForm
         // 
         deviceToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { findToolStripMenuItem, asdToolStripMenuItem, adawdToolStripMenuItem });
         deviceToolStripMenuItem.Name = "deviceToolStripMenuItem";
-        deviceToolStripMenuItem.Size = new Size(106, 36);
+        deviceToolStripMenuItem.Size = new Size(80, 29);
         deviceToolStripMenuItem.Text = "Device";
         // 
         // findToolStripMenuItem
         // 
         findToolStripMenuItem.Name = "findToolStripMenuItem";
-        findToolStripMenuItem.Size = new Size(216, 44);
+        findToolStripMenuItem.Size = new Size(167, 34);
         findToolStripMenuItem.Text = "find";
         // 
         // asdToolStripMenuItem
         // 
         asdToolStripMenuItem.Name = "asdToolStripMenuItem";
-        asdToolStripMenuItem.Size = new Size(216, 44);
+        asdToolStripMenuItem.Size = new Size(167, 34);
         asdToolStripMenuItem.Text = "asd";
         // 
         // adawdToolStripMenuItem
@@ -120,36 +118,33 @@ partial class MainForm
         adawdToolStripMenuItem.Checked = true;
         adawdToolStripMenuItem.CheckState = CheckState.Checked;
         adawdToolStripMenuItem.Name = "adawdToolStripMenuItem";
-        adawdToolStripMenuItem.Size = new Size(216, 44);
+        adawdToolStripMenuItem.Size = new Size(167, 34);
         adawdToolStripMenuItem.Text = "adawd";
         // 
         // splitter1
         // 
-        splitter1.Location = new Point(0, 42);
-        splitter1.Margin = new Padding(4);
+        splitter1.Location = new Point(0, 33);
         splitter1.Name = "splitter1";
-        splitter1.Size = new Size(5, 432);
+        splitter1.Size = new Size(4, 340);
         splitter1.TabIndex = 27;
         splitter1.TabStop = false;
         // 
         // controlChannelInput
         // 
-        controlChannelInput.Location = new Point(118, 64);
-        controlChannelInput.Margin = new Padding(4);
+        controlChannelInput.Location = new Point(91, 50);
         controlChannelInput.Maximum = new decimal(new int[] { 16, 0, 0, 0 });
         controlChannelInput.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
         controlChannelInput.Name = "controlChannelInput";
-        controlChannelInput.Size = new Size(248, 39);
+        controlChannelInput.Size = new Size(191, 31);
         controlChannelInput.TabIndex = 28;
         controlChannelInput.Value = new decimal(new int[] { 1, 0, 0, 0 });
         // 
         // label1
         // 
         label1.AutoSize = true;
-        label1.Location = new Point(13, 67);
-        label1.Margin = new Padding(4, 0, 4, 0);
+        label1.Location = new Point(10, 52);
         label1.Name = "label1";
-        label1.Size = new Size(102, 32);
+        label1.Size = new Size(75, 25);
         label1.TabIndex = 29;
         label1.Text = "Channel";
         // 
@@ -159,11 +154,9 @@ partial class MainForm
         groupBox4.Controls.Add(buttonEnabledCheckBox);
         groupBox4.Controls.Add(label5);
         groupBox4.Controls.Add(buttonProgramChangeInput);
-        groupBox4.Location = new Point(374, 132);
-        groupBox4.Margin = new Padding(4);
+        groupBox4.Location = new Point(288, 103);
         groupBox4.Name = "groupBox4";
-        groupBox4.Padding = new Padding(4);
-        groupBox4.Size = new Size(352, 270);
+        groupBox4.Size = new Size(271, 213);
         groupBox4.TabIndex = 43;
         groupBox4.TabStop = false;
         groupBox4.Text = "Button";
@@ -171,10 +164,9 @@ partial class MainForm
         // buttonEnabledCheckBox
         // 
         buttonEnabledCheckBox.AutoSize = true;
-        buttonEnabledCheckBox.Location = new Point(21, 47);
-        buttonEnabledCheckBox.Margin = new Padding(4);
+        buttonEnabledCheckBox.Location = new Point(16, 37);
         buttonEnabledCheckBox.Name = "buttonEnabledCheckBox";
-        buttonEnabledCheckBox.Size = new Size(131, 36);
+        buttonEnabledCheckBox.Size = new Size(101, 29);
         buttonEnabledCheckBox.TabIndex = 41;
         buttonEnabledCheckBox.Text = "Enabled";
         buttonEnabledCheckBox.UseVisualStyleBackColor = true;
@@ -182,21 +174,19 @@ partial class MainForm
         // label5
         // 
         label5.AutoSize = true;
-        label5.Location = new Point(21, 101);
-        label5.Margin = new Padding(4, 0, 4, 0);
+        label5.Location = new Point(16, 79);
         label5.Name = "label5";
-        label5.Size = new Size(193, 32);
+        label5.Size = new Size(146, 25);
         label5.TabIndex = 39;
         label5.Text = "Program Change";
         // 
         // buttonProgramChangeInput
         // 
         buttonProgramChangeInput.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-        buttonProgramChangeInput.Location = new Point(21, 137);
-        buttonProgramChangeInput.Margin = new Padding(4);
+        buttonProgramChangeInput.Location = new Point(16, 107);
         buttonProgramChangeInput.Maximum = new decimal(new int[] { 127, 0, 0, 0 });
         buttonProgramChangeInput.Name = "buttonProgramChangeInput";
-        buttonProgramChangeInput.Size = new Size(309, 39);
+        buttonProgramChangeInput.Size = new Size(238, 31);
         buttonProgramChangeInput.TabIndex = 37;
         // 
         // buttonOverviewListBox
@@ -205,20 +195,18 @@ partial class MainForm
         buttonOverviewListBox.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
         buttonOverviewListBox.FormattingEnabled = true;
         buttonOverviewListBox.IntegralHeight = false;
-        buttonOverviewListBox.ItemHeight = 28;
-        buttonOverviewListBox.Location = new Point(16, 132);
-        buttonOverviewListBox.Margin = new Padding(4);
+        buttonOverviewListBox.ItemHeight = 22;
+        buttonOverviewListBox.Location = new Point(12, 103);
         buttonOverviewListBox.Name = "buttonOverviewListBox";
-        buttonOverviewListBox.Size = new Size(350, 269);
+        buttonOverviewListBox.Size = new Size(270, 213);
         buttonOverviewListBox.TabIndex = 44;
         // 
         // submitButton
         // 
         submitButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        submitButton.Location = new Point(563, 423);
-        submitButton.Margin = new Padding(4);
+        submitButton.Location = new Point(434, 322);
         submitButton.Name = "submitButton";
-        submitButton.Size = new Size(163, 47);
+        submitButton.Size = new Size(125, 37);
         submitButton.TabIndex = 46;
         submitButton.Text = "Write";
         submitButton.UseVisualStyleBackColor = true;
@@ -226,9 +214,11 @@ partial class MainForm
         // 
         // closeButton
         // 
-        closeButton.Location = new Point(406, 424);
+        closeButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+        closeButton.Location = new Point(304, 322);
+        closeButton.Margin = new Padding(2, 2, 2, 2);
         closeButton.Name = "closeButton";
-        closeButton.Size = new Size(150, 46);
+        closeButton.Size = new Size(125, 37);
         closeButton.TabIndex = 47;
         closeButton.Text = "Close";
         closeButton.UseVisualStyleBackColor = true;
@@ -236,9 +226,9 @@ partial class MainForm
         // 
         // MainForm
         // 
-        AutoScaleDimensions = new SizeF(13F, 32F);
+        AutoScaleDimensions = new SizeF(10F, 25F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(742, 516);
+        ClientSize = new Size(571, 405);
         Controls.Add(closeButton);
         Controls.Add(submitButton);
         Controls.Add(buttonOverviewListBox);
@@ -250,9 +240,8 @@ partial class MainForm
         Controls.Add(menuStrip1);
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MainMenuStrip = menuStrip1;
-        Margin = new Padding(4);
         MaximizeBox = false;
-        MinimumSize = new Size(642, 428);
+        MinimumSize = new Size(499, 347);
         Name = "MainForm";
         Text = "MIDI-Relay";
         statusStrip1.ResumeLayout(false);
