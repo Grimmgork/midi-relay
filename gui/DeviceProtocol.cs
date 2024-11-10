@@ -46,7 +46,7 @@ namespace gui
             return new DeviceMessage(cmd, buffer);
         }
 
-        private DeviceMessage MakeRequest(DeviceMessage request)
+        private DeviceMessage Request(DeviceMessage request)
         {
             serial.DiscardInBuffer();
             SendMessage(request);
@@ -56,14 +56,14 @@ namespace gui
         public void UpdateButtonSequence(byte index, params byte[] sequence)
         {
             byte[] content = (new byte[] { index }).Concat(sequence).ToArray();
-            DeviceMessage res = MakeRequest(new DeviceMessage(0x30, content));
+            DeviceMessage res = Request(new DeviceMessage(0x30, content));
             if (res.Command != 0x06)
                 throw new Exception();
         }
 
         public byte[] ReadButtonSequence(byte index)
         {
-            DeviceMessage res = MakeRequest(new DeviceMessage(0x31, index));
+            DeviceMessage res = Request(new DeviceMessage(0x31, index));
             if (res.Command == 0x06)
                 return res.Content;
 
@@ -76,7 +76,7 @@ namespace gui
             List<byte[]> result = new List<byte[]>();
             while (true)
             {
-                DeviceMessage res = MakeRequest(new DeviceMessage(0x31, i));
+                DeviceMessage res = Request(new DeviceMessage(0x31, i));
                 if (res.Command != 0x06)
                     break;
 
@@ -88,9 +88,10 @@ namespace gui
 
         public void Ping()
         {
-            DeviceMessage res = MakeRequest(new DeviceMessage(0x33));
+            DeviceMessage res = Request(new DeviceMessage(0x33));
             if (res.Command == 0x06)
                 return;
+
             throw new Exception("invalid response!");
         }
 

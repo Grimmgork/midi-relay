@@ -8,8 +8,8 @@ namespace gui
 {
     public class DeviceMessage
     {
-        public byte Command;
-        public byte[] Content;
+        public readonly byte Command;
+        public readonly byte[] Content;
         public int Length => Content.Length;
 
         public DeviceMessage(byte command, params byte[] content)

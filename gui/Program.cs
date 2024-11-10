@@ -1,5 +1,8 @@
+using System.Runtime.Versioning;
+
 namespace gui;
 
+[RequiresPreviewFeatures]
 static class Program
 {
     /// <summary>
