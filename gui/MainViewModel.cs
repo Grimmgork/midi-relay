@@ -19,7 +19,7 @@ namespace gui
     public class MainViewModel : INotifyPropertyChanged
     {
         private string? _selectedPort;
-        private DeviceConfigurationModel _config = new DeviceConfigurationModel();
+        private DeviceConfigurationModel _device = new DeviceConfigurationModel();
         private ApplicationState _state;
         private string? _errorMessage;
         private string[] _ports = new string[] { };
@@ -77,14 +77,16 @@ namespace gui
         {
             get
             {
-                return _config;
+                return _device;
             }
             set
             {
-                _config = value;
+                _device = value;
                 OnPropertyChanged(nameof(Device));
             }
         }
+
+        public DeviceConfigurationModel OriginalDevice = new DeviceConfigurationModel();
         public string[] Ports
         {
             get

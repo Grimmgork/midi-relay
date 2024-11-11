@@ -44,8 +44,15 @@ public partial class MainForm : Form
         buttonEnabledCheckBox.CheckedChanged += ButtonEnabledCheckBox_CheckedChanged;
         buttonProgramChangeInput.ValueChanged += ButtonProgramChangeInput_ValueChanged;
 
+        FormClosing += MainForm_FormClosing;
+
         controller.SelectButton(-1);
         controller.SelectDevice(null);
+    }
+
+    private void MainForm_FormClosing(object? sender, FormClosingEventArgs e)
+    {
+        e.Cancel = !AskForUnsavedChanges();
     }
 
     private void ControlChannelBind_Parse(object? sender, ConvertEventArgs e)
@@ -207,16 +214,22 @@ public partial class MainForm : Form
 
     private void OnSearchDevice_Clicked(object? sender, EventArgs args)
     {
-        controller.DoBusyWork(() =>
-            controller.SearchForDevice());
+        if (AskForUnsavedChanges())
+        {
+            controller.DoBusyWork(() =>
+                controller.SearchForDevice());
+        }
     }
 
     private void OnSelectDevice_Clicked(object? sender, EventArgs args)
     {
         if (sender is ToolStripItem item)
         {
-            controller.DoBusyWork(() =>
-                controller.SelectDevice(item.Text));
+            if (AskForUnsavedChanges())
+            {
+                controller.DoBusyWork(() =>
+                    controller.SelectDevice(item.Text));
+            }
         }
     }
 
@@ -230,4 +243,17 @@ public partial class MainForm : Form
     {
         this.Close();
     }
+
+    private bool AskForUnsavedChanges()
+    {
+        if (controller.HasUnsavedChanges())
+        {
+            QuestionBox box = new QuestionBox("Discard unsaved changes?");
+            box.ShowDialog();
+            return box.Result == DialogResult.Yes;
+        }
+
+        return true;
+    }
+
 }

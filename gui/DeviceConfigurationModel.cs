@@ -1,8 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace gui
 {
-    public class DeviceConfigurationModel : INotifyPropertyChanged
+    public class DeviceConfigurationModel : INotifyPropertyChanged, ICloneable
     {
         private byte _controlChannel = 0;
         public byte ControlChannel
@@ -36,6 +37,21 @@ namespace gui
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public object Clone()
+        {
+            ButtonConfigurationModel[] buttons = new ButtonConfigurationModel[_buttons.Length];
+            for(int i = 0; i < buttons.Length; i++)
+            {
+                buttons[i] = (ButtonConfigurationModel) _buttons[i].Clone();
+            }
+
+            return new DeviceConfigurationModel()
+            {
+                ControlChannel = _controlChannel,
+                Buttons = buttons
+            };
         }
     }
 }

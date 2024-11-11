@@ -41,6 +41,8 @@ namespace gui
                     i++;
                 }
             }
+
+            model.OriginalDevice = (DeviceConfigurationModel)model.Device.Clone();
         }
 
         public void SelectButton(int index)
@@ -112,6 +114,8 @@ namespace gui
 
             if (model.Device.Buttons.Length > 0)
                 model.SelectedButton = model.Device.Buttons[0];
+
+            model.OriginalDevice = (DeviceConfigurationModel) model.Device.Clone();
         }
 
         public void SearchForDevice()
@@ -134,6 +138,26 @@ namespace gui
 
                 }
             }
+        }
+
+        public bool HasUnsavedChanges()
+        {
+            if (model.SelectedPort == null)
+                return false;
+
+            if (model.Device.ControlChannel != model.OriginalDevice.ControlChannel)
+                return true;
+
+            for (int i = 0; i < model.Device.Buttons.Length; i++)
+            {
+                if (model.Device.Buttons[i].Enabled != model.OriginalDevice.Buttons[i].Enabled)
+                    return true;
+
+                if (model.Device.Buttons[i].ProgramNumber != model.OriginalDevice.Buttons[i].ProgramNumber)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

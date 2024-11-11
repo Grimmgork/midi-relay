@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace gui
 {
-    public class ButtonConfigurationModel : INotifyPropertyChanged
+    public class ButtonConfigurationModel : INotifyPropertyChanged, ICloneable
     {
         public int Index { get; private set; }
 
@@ -57,10 +57,24 @@ namespace gui
             ProgramNumber = programNumber;
         }
 
+        public ButtonConfigurationModel()
+        {
+
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public object Clone()
+        {
+            return new ButtonConfigurationModel(Index)
+            {
+                Enabled = _enabled,
+                ProgramNumber = _programNumber
+            };
         }
     }
 }
