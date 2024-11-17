@@ -36,7 +36,7 @@ setup()
 void
 loop()
 {
-	process_command(&cmd_prog, &cmd_info, NULL, &cmd_ping);
+	process_command(&cmd_prog, &cmd_info, &cmd_reset, &cmd_ping);
 	process_buttons(buttons, NBUTTONS, 100);
 	for(int i = 0; i < NBUTTONS; i++) {
 		if(buttons[i].low_pulse) {
@@ -123,5 +123,24 @@ cmd_info(struct cmd_data *req, struct cmd_data *res)
 
 	memcpy(res->buffer, sequences[button].buffer, sequences[button].length);
 	res->length = sequences[button].length;
+	return 0;
+}
+
+int
+cmd_reset(struct cmd_data *req, struct cmd_data *res)
+{
+	if (req->length != 0) {
+		return 1;
+	}
+	
+	for (char button = 0; button < NBUTTONS; button++)
+	{
+		int resn = save_sequence(button, NULL, 0);
+		if (resn != 0) {
+			return 1;
+		}
+	}
+
+	load_sequences();
 	return 0;
 }

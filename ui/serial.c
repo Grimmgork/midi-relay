@@ -2,11 +2,11 @@
 #include <tchar.h>
 #include <stdio.h>
 
-void *serial_open(char *portid, int baudrate, int timeout)
+void *serial_open(char *port, int baudrate, int timeout)
 {
 	// open file handle
 	HANDLE connection;
-	connection = CreateFile(portid,
+	connection = CreateFile(port,
 		GENERIC_READ | GENERIC_WRITE,
 		0,
 		0,
@@ -21,11 +21,7 @@ void *serial_open(char *portid, int baudrate, int timeout)
 
 	// setting parameters
 	DCB dcbSerialParams = {0};
-	dcbSerialParams.DCBlength=sizeof(dcbSerialParams);
-	if (!GetCommState(connection, &dcbSerialParams)) {
-		CloseHandle(connection);
-		return NULL;
-	}
+	dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
 	dcbSerialParams.BaudRate = baudrate;
 	dcbSerialParams.ByteSize = 8;
 	dcbSerialParams.StopBits = ONESTOPBIT;
@@ -36,7 +32,7 @@ void *serial_open(char *portid, int baudrate, int timeout)
 	}
 
 	COMMTIMEOUTS timeouts={0};
-	timeouts.ReadIntervalTimeout=50;
+	timeouts.ReadIntervalTimeout=timeout;
 
 	timeouts.ReadTotalTimeoutConstant=timeout;
 	timeouts.ReadTotalTimeoutMultiplier=10;
@@ -48,7 +44,8 @@ void *serial_open(char *portid, int baudrate, int timeout)
 		CloseHandle(connection);
 		return NULL;
 	}
-	
+
+	Sleep(10);
 	return connection;
 }
 
@@ -75,8 +72,16 @@ int serial_read(void *connection, char *buffer, int length)
 
 int serial_write(void *connection, char *buffer, int length)
 {
-	if (!WriteFile(connection, buffer, length, NULL, NULL)) {
-	 	return -1;
+	DWORD written;
+	int result = WriteFile(connection, buffer, length, &written, NULL);
+
+	if (result == 0) {
+		return 1;
 	}
+
+	if (written != length) {
+		return 1;
+	}
+
 	return 0;
 }

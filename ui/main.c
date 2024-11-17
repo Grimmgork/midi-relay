@@ -61,8 +61,8 @@ int cmd_help(int argc, char *argv[])
 int cmd_program(int argc, char *argv[])
 {
 	// com
-	char* com = shift(&argc, &argv);
-	if(com == NULL) {
+	char* port = shift(&argc, &argv);
+	if(port == NULL) {
 		errno = ERR_INVALID_ARG;
 		return -1;
 	}
@@ -110,25 +110,26 @@ int cmd_program(int argc, char *argv[])
 		return -1;
 	}
 
-	int res = dev_program("com3", (char)button-1, sequence, length);
+	int res = dev_program(port, (char)button-1, sequence, length);
 	return res;
 }
 
 int cmd_reset(int argc, char *argv[])
 {
-	char* com = shift(&argc, &argv);
-	if(com == NULL) {
+	char* port = shift(&argc, &argv);
+	if(port == NULL) {
 		errno = ERR_INVALID_ARG;
 		return -1;
 	}
 
-	return 0;
+	int res = dev_reset(port);
+	return res;
 }
 
 int cmd_info(int argc, char *argv[])
 {
-	char* com = shift(&argc, &argv);
-	if(com == NULL) {
+	char* port = shift(&argc, &argv);
+	if(port == NULL) {
 		errno = ERR_INVALID_ARG;
 		return -1;
 	}
@@ -137,7 +138,7 @@ int cmd_info(int argc, char *argv[])
 	char length = 0;
 	char button = 0;
 	for(; button < 255; button++) {
-		if(dev_info(com, button, sequence, &length) != 0) {
+		if(dev_info(port, button, sequence, &length) != 0) {
 			break;
 		}
 		printf("[%02d] ", (int)button+1);
