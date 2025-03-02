@@ -66,10 +66,11 @@ save_sequence(char button, char *buffer, char length)
 		return 1;
 	}
 
-	int start_addr = button * (MIDI_SEQUENCE_LENGTH+1);
+	int start_addr = button * sizeof(struct midi_sequence);
 	EEPROM.update(start_addr, length);
 	start_addr++;
-	for (char i = 0; i < length; i++) {
+	char i;
+	for (i = 0; i < length; i++) {
 		EEPROM.update(start_addr + i, buffer[i]);
 	}
 
@@ -133,7 +134,8 @@ cmd_reset(struct cmd_data *req, struct cmd_data *res)
 		return 1;
 	}
 	
-	for (char button = 0; button < NBUTTONS; button++)
+	char button;
+	for (button = 0; button < NBUTTONS; button++)
 	{
 		int resn = save_sequence(button, NULL, 0);
 		if (resn != 0) {

@@ -1,3 +1,6 @@
 @echo off
-mode %1 BAUD=31250 PARITY=n DATA=8 > NUL
-echo "0x32 0x00" | xxd -r -p > com3
+set /p port="port?: "
+.\ui\ui.exe reset %port%
+echo.
+IF %ERRORLEVEL% EQU 0 (Echo Reset sucessful!)
+pause

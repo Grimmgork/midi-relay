@@ -1,0 +1,15 @@
+# prep
+(install gcc)
+install arduino
+install dotnet sdk
+
+# build
+compile firmware
+compile gui
+(compile ui)
+
+# deploy
+upload scetch top port
+send reset command to port
+copy gui into folder
+prepare email

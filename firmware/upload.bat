@@ -1,2 +1,2 @@
 @echo off
-arduino-cli upload -p com3 --fqbn arduino:avr:uno
+arduino-cli upload -p com4 --fqbn arduino:avr:uno
