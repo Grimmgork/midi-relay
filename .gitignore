@@ -2,3 +2,4 @@
 /gui/obj
 .vs
 *.exe
+*.csproj.user

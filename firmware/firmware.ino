@@ -4,6 +4,9 @@
 #include "buttons.h"
 
 #define NBUTTONS 5
+#define ASSIGN1 4
+#define ASSIGN2 3
+
 #define MIDI_SEQUENCE_LENGTH 16
 
 struct midi_sequence {
@@ -18,12 +21,14 @@ void load_sequences();
 int save_sequence(char button, char *buffer, char length);
 void run_sequence(char button);
 
-void 
+void
 setup()
 {
 	// setup pins
+	pinMode(11, INPUT_PULLUP);
+	pinMode(12, INPUT_PULLUP);
 	pinMode(LED_BUILTIN, OUTPUT);
-	for(int i = 0; i < NBUTTONS; i++) {
+	for (int i = 0; i < NBUTTONS; i++) {
 		pinMode(2+i, INPUT_PULLUP);
 		buttons[i].pin = 2+i;
 	}
@@ -38,8 +43,15 @@ loop()
 {
 	process_command(&cmd_prog, &cmd_info, &cmd_reset, &cmd_ping);
 	process_buttons(buttons, NBUTTONS, 100);
-	for(int i = 0; i < NBUTTONS; i++) {
-		if(buttons[i].low_pulse) {
+	for (int i = 0; i < NBUTTONS; i++)
+	{
+		// skip assign button if jack is plugged in
+		if (i == ASSIGN1 && digitalRead(11) ||
+			i == ASSIGN2 && digitalRead(12)) {
+				continue;
+		}
+
+		if (buttons[i].low_pulse) {
 			run_sequence(i);
 		}
 	}

@@ -2,7 +2,7 @@ struct button {
 	int pin;
 	unsigned long debounce_start;
 	int debounce;
-	int high;
+	int reading;
 	int high_pulse;
 	int low_pulse;
 };

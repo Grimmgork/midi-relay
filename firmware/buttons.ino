@@ -1,12 +1,12 @@
 
 void process_buttons(struct button buttons[], int length, int debounce) {
-	for(int i = 0; i < NBUTTONS; i++){
+	for(int i = 0; i < length; i++){
 		struct button *button = &buttons[i];
 		int reading = digitalRead(button->pin);
 		unsigned long now = millis();
 
 		if(button->high_pulse) {
-			button->low_pulse = 0;
+			button->high_pulse = 0;
 		}
 
 		if(button->low_pulse) {
@@ -18,11 +18,11 @@ void process_buttons(struct button buttons[], int length, int debounce) {
 		}
 
 		button->debounce = 0;
-		if (reading != button->high) {
+		if (reading != button->reading) {
 			button->debounce_start = now;
 			button->debounce = 1;
 			
-			button->high = reading;
+			button->reading = reading;
 			if (reading == 1) {
 				button->high_pulse = 1;
 			}
