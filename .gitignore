@@ -1,3 +1,4 @@
 /gui/bin
 /gui/obj
 .vs
+*.exe
