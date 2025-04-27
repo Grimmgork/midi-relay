@@ -1,0 +1,11 @@
+platine 2
+2.54 sockel 1
+gehäuse 3
+klinkenbuchse 4
+widerstände 1
+optokoppler 4
+midi buchsen 5
+arduino nano 4
+
+-- 26eur
+
