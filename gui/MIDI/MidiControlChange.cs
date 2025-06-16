@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace gui.Midi
 {
-    public class MidiControlChange : IMidiCommand
+    public struct MidiControlChange : IMidiCommand
     {
         public readonly byte ControlChannel;
         public readonly byte ControllerNumber;

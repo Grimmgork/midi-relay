@@ -9,5 +9,7 @@ namespace gui.Midi
     public interface IMidiCommand
     {
         public byte[] ToSequence();
+
+        public int GetHashCode();
     }
 }

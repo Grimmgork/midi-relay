@@ -8,13 +8,13 @@ using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
-namespace gui
+namespace gui.Protocol
 {
     public class DeviceProtocol : IDisposable
     {
         private SerialPort serial;
 
-        private DeviceProtocol(string port, int timeout = 1000)
+        private DeviceProtocol(string port, int timeout)
         {
             serial = new SerialPort(port, 31250, Parity.None, 8, StopBits.One);
             serial.WriteTimeout = timeout;

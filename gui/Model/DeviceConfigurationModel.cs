@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace gui
+namespace gui.Model
 {
     public class DeviceConfigurationModel : INotifyPropertyChanged, ICloneable
     {
@@ -19,7 +19,7 @@ namespace gui
             }
         }
 
-        private ButtonConfigurationModel[] _buttons = new ButtonConfigurationModel[] {};
+        private ButtonConfigurationModel[] _buttons = new ButtonConfigurationModel[] { };
         public ButtonConfigurationModel[] Buttons
         {
             get
@@ -42,9 +42,9 @@ namespace gui
         public object Clone()
         {
             ButtonConfigurationModel[] buttons = new ButtonConfigurationModel[_buttons.Length];
-            for(int i = 0; i < buttons.Length; i++)
+            for (int i = 0; i < buttons.Length; i++)
             {
-                buttons[i] = (ButtonConfigurationModel) _buttons[i].Clone();
+                buttons[i] = (ButtonConfigurationModel)_buttons[i].Clone();
             }
 
             return new DeviceConfigurationModel()

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace gui
+namespace gui.Protocol
 {
     public class DeviceMessage
     {
@@ -14,8 +14,8 @@ namespace gui
 
         public DeviceMessage(byte command, params byte[] content)
         {
-            this.Command = command;
-            this.Content = content;
+            Command = command;
+            Content = content;
         }
     }
 }

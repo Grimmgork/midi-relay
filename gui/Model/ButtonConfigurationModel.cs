@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace gui
+namespace gui.Model
 {
     public class ButtonConfigurationModel : INotifyPropertyChanged, ICloneable
     {

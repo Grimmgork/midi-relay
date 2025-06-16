@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using gui.Midi;
+using gui.Model;
 
 namespace gui
 {
@@ -23,7 +24,32 @@ namespace gui
         private ApplicationState _state;
         private string? _errorMessage;
         private string[] _ports = new string[] { };
+        private string[] _targets = new string[] { };
         private ButtonConfigurationModel? _selectedButton;
+        private string? _selectedTarget;
+        private List<TargetProgramChangeItem> _programChangeItems = new List<TargetProgramChangeItem>();
+        private Exception? exception;
+
+        public Exception? Exception
+        {
+            get
+            {
+                return exception;
+            }
+            set
+            {
+                exception = value;
+                OnPropertyChanged(nameof(Exception));
+            }
+        }
+
+        public ICollection<TargetProgramChangeItem> ProgramChangeDictionary
+        {
+            get
+            {
+                return _programChangeItems;
+            }
+        }
 
         public ButtonConfigurationModel? SelectedButton
         {
@@ -37,6 +63,7 @@ namespace gui
                 OnPropertyChanged(nameof(SelectedButton));
             }
         }
+        
         public string? SelectedPort
         {
             get
@@ -49,6 +76,20 @@ namespace gui
                 OnPropertyChanged(nameof(SelectedPort));
             }
         }
+
+        public string? SelectedTarget
+        {
+            get
+            {
+                return _selectedTarget;
+            }
+            set
+            {
+                _selectedTarget = value;
+                OnPropertyChanged(nameof(SelectedTarget));
+            }
+        }
+
         public string? ErrorMessage
         {
             get
@@ -61,6 +102,7 @@ namespace gui
                 OnPropertyChanged(nameof(ErrorMessage));
             }
         }
+        
         public ApplicationState State
         {
             get
@@ -73,20 +115,22 @@ namespace gui
                 OnPropertyChanged(nameof(State));
             }
         }
+
         public DeviceConfigurationModel Device
         {
             get
             {
                 return _device;
             }
-            set
-            {
-                _device = value;
-                OnPropertyChanged(nameof(Device));
-            }
+            //set
+            //{
+            //    _device = value;
+            //    OnPropertyChanged(nameof(Device));
+            //}
         }
 
         public DeviceConfigurationModel OriginalDevice = new DeviceConfigurationModel();
+
         public string[] Ports
         {
             get
@@ -100,7 +144,20 @@ namespace gui
             }
         }
 
+        public string[] Targets
+        {
+            get
+            {
+                return _targets;
+            }
+            set
+            {
+                _targets = value;
+                OnPropertyChanged(nameof(Targets));
+            }
+        }
 
+        
         public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {

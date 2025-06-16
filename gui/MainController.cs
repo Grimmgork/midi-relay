@@ -1,25 +1,112 @@
 ﻿using gui.Midi;
-using System;
-using System.Collections.Generic;
+using gui.Model;
+using gui.Protocol;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.AxHost;
+using System.Text.Json;
+using System.Xml.Linq;
 
 namespace gui
 {
     public class MainController
     {
-        MainViewModel model;
-        public MainController(MainViewModel model)
+        private MainViewModel model;
+        private string settingsFile;
+        private JsonSerializerOptions serializerOptions = new JsonSerializerOptions() { 
+            PropertyNameCaseInsensitive = true 
+        };
+
+        private Settings settings = new Settings();
+
+        public MainController(MainViewModel model, string settingsFile)
         {
             this.model = model;
+            this.settingsFile = settingsFile;
         }
 
-        public void FetchPorts()
+        public void Initialize()
         {
             model.Ports = SerialPort.GetPortNames();
+
+            model.Targets = FetchAvailableTargets().ToArray();
+            if (model.Targets.Length == 0)
+            {
+                throw new Exception("No target.json file found in ./targets folder");
+            }
+
+            settings = LoadSettingsFromFile(settingsFile, new Settings()
+            {
+                ControlChannel = 1,
+                Target = model.Targets.First(),
+                SerialPort = model.Ports.First()
+            });
+
+            model.Device.ControlChannel = settings.ControlChannel;
+            if (settings.Target != null && model.Targets.Contains(settings.Target))
+            {
+                SelectTarget(settings.Target);
+            }
+            else
+            {
+                SelectTarget(model.Targets.First());
+            }
+        }
+
+        public void SaveSettings()
+        {
+            if (model.SelectedTarget == null)
+                throw new InvalidOperationException();
+
+            File.WriteAllText(settingsFile, JsonSerializer.Serialize(settings, serializerOptions));
+        }
+
+        public string? GetNameOfCommand(IMidiCommand command)
+        {
+            if (command is MidiProgramChange programChange)
+            {
+                TargetProgramChangeItem? item = model.ProgramChangeDictionary.FirstOrDefault(i => i.ProgramNumber == programChange.ProgramNumber);
+                return item?.Name;
+            }
+
+            return null;
+        }
+
+        private static Settings LoadSettingsFromFile(string settingsFile, Settings fallback, JsonSerializerOptions? serializerOptions = null)
+        {
+            if (!File.Exists(settingsFile))
+                return fallback;
+
+            // load config
+            string settingsText = File.ReadAllText(settingsFile);
+            Settings settings = JsonSerializer.Deserialize<Settings>(settingsText, serializerOptions) ?? throw new Exception("Invalid content of settings.json");
+            return settings;
+        }
+
+        private static IEnumerable<string> FetchAvailableTargets()
+        {
+            if (!Directory.Exists("ressources/targets"))
+                return new string[] {};
+
+            return Directory.GetFiles("ressources/targets").Where(path => path.EndsWith(".json")).Select(name => Path.GetFileNameWithoutExtension(name));
+        }
+
+        public void SelectTarget(string target)
+        {
+            if (!model.Targets.Contains(target))
+                throw new InvalidOperationException();
+
+            string targetFileText = File.ReadAllText($"ressources/targets/{target}.json");
+            TargetProgramChangeItem[] items = new TargetProgramChangeItem[] { };
+            items = JsonSerializer.Deserialize<TargetProgramChangeItem[]>(targetFileText, serializerOptions) ?? throw new Exception($"Invalid content of {target}.json file");
+
+            model.ProgramChangeDictionary.Clear();
+            foreach (TargetProgramChangeItem item in items)
+            {
+                model.ProgramChangeDictionary.Add(item);
+            }
+
+            model.SelectedTarget = target;
+            settings.Target = model.SelectedTarget;
+            SaveSettings();
         }
 
         public void WriteConfigurationToDevice()
@@ -43,6 +130,9 @@ namespace gui
             }
 
             model.OriginalDevice = (DeviceConfigurationModel)model.Device.Clone();
+
+            settings.ControlChannel = model.Device.ControlChannel;
+            SaveSettings();
         }
 
         public void SelectButton(int index)
@@ -57,13 +147,15 @@ namespace gui
         {
             try
             {
+                model.Exception = null;
                 model.State = ApplicationState.Busy;
                 work.Invoke();
                 model.State = ApplicationState.Done;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 model.State = ApplicationState.Error;
+                model.Exception = ex;
             }
         }
 
@@ -76,7 +168,7 @@ namespace gui
             }
                 
             IEnumerable<byte[]> sequences = Enumerable.Empty<byte[]>();
-            model.Device.ControlChannel = 0;
+            model.Device.ControlChannel = settings.ControlChannel;
             model.Device.Buttons = new ButtonConfigurationModel[] { };
             model.SelectedButton = null;
             model.SelectedPort = null;
@@ -85,6 +177,9 @@ namespace gui
             {
                 sequences = connection.ReadAllButtonSequences();
             }
+
+            settings.SerialPort = portName;
+            SaveSettings();
 
             int i = 0;
             List<ButtonConfigurationModel> buttons = new List<ButtonConfigurationModel>();
@@ -103,8 +198,8 @@ namespace gui
                     }
                     else
                     {
-                        buttons.Add(new ButtonConfigurationModel(i, programChange.ProgramNumber));
-                        model.Device.ControlChannel = programChange.ControlChannel;
+                        buttons.Add(new ButtonConfigurationModel(i, programChange.Value.ProgramNumber));
+                        model.Device.ControlChannel = programChange.Value.ControlChannel;
                     }
                 }
                 i++;
@@ -121,7 +216,13 @@ namespace gui
         public void SearchForDevice()
         {
             model.SelectedPort = null;
-            foreach (string portName in model.Ports)
+            IEnumerable<string> portsToSearch = model.Ports;
+            if (!string.IsNullOrEmpty(settings.SerialPort))
+            {
+                portsToSearch = portsToSearch.Where(i => i != settings.SerialPort).Prepend(settings.SerialPort);
+            }
+
+            foreach (string portName in portsToSearch)
             {
                 try
                 {

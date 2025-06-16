@@ -1,12 +1,7 @@
-using System;
+using gui.Midi;
+using gui.Model;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.IO.Ports;
-using System.Reflection;
 using System.Runtime.Versioning;
-using System.Text;
-using System.Windows.Forms;
 
 namespace gui;
 
@@ -25,11 +20,15 @@ public partial class MainForm : Form
         Text = $"{windowTitle} - {version}";
 
         model = new MainViewModel();
-        controller = new MainController(model);
+        controller = new MainController(model, "settings.json");
 
         model.PropertyChanged += ViewModel_PropertyChanged;
-        controller.FetchPorts();
+        controller.Initialize();
 
+        programChangeComboBox.SelectedValueChanged += ProgramChangeInput_ValueChanged;
+        programChangeComboBox.DisplayMember = "Name";
+
+        removeProgramChangeButton.Click += RemoveProgramChangeButton_Click; ;
         buttonOverviewListBox.SelectedIndexChanged += ButtonOverviewListBox_SelectedIndexChanged;
         model.Device.PropertyChanged += Device_PropertyChanged;
 
@@ -39,15 +38,24 @@ public partial class MainForm : Form
         controlChannelInput.DataBindings.Add(controlChannelBinding);
 
         controlChannelInput.Leave += ControlChannelInput_Leave;
-        buttonProgramChangeInput.Leave += ButtonProgramChangeInput_Leave;
-
-        buttonEnabledCheckBox.CheckedChanged += ButtonEnabledCheckBox_CheckedChanged;
-        buttonProgramChangeInput.ValueChanged += ButtonProgramChangeInput_ValueChanged;
 
         FormClosing += MainForm_FormClosing;
 
         controller.SelectButton(-1);
         controller.SelectDevice(null);
+
+        RefreshProgramChangeComboBoxItems();
+    }
+
+    private void RemoveProgramChangeButton_Click(object? sender, EventArgs e)
+    {
+        if (model.SelectedButton != null)
+        {
+            model.SelectedButton.Enabled = false;
+            removeProgramChangeButton.Enabled = false;
+            programChangeComboBox.SelectedIndex = -1;
+            RefreshButtonOverviewItem(buttonOverviewListBox.SelectedIndex);
+        }
     }
 
     private void MainForm_FormClosing(object? sender, FormClosingEventArgs e)
@@ -63,8 +71,8 @@ public partial class MainForm : Form
 
     private void ControlChannelBind_Format(object? sender, ConvertEventArgs e)
     {
-        byte channel = (byte) e.Value!;
-        e.Value = channel + 1;
+        byte? channel = e.Value == null ? null : (byte)(e.Value);
+        e.Value = channel == null ? null : channel + 1;
     }
 
     private void Device_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -75,21 +83,21 @@ public partial class MainForm : Form
         }
     }
 
-    private void ButtonProgramChangeInput_ValueChanged(object? sender, EventArgs e)
+    private void ProgramChangeInput_ValueChanged(object? sender, EventArgs e)
     {
-        if (model.SelectedButton != null)
+        if (sender is ComboBox comboBox && model.SelectedButton != null)
         {
-            model.SelectedButton.ProgramNumber = (byte)buttonProgramChangeInput.Value;
-            RefreshButtonOverviewItem(buttonOverviewListBox.SelectedIndex);
-        }
-    }
+            if (comboBox.SelectedItem == null)
+            {
+                model.SelectedButton.Enabled = false;
+            }
+            else
+            {
+                model.SelectedButton.Enabled = true;
+                model.SelectedButton.ProgramNumber = ((TargetProgramChangeItem)comboBox.SelectedItem).ProgramNumber;
+                removeProgramChangeButton.Enabled = true;
+            }
 
-    private void ButtonEnabledCheckBox_CheckedChanged(object? sender, EventArgs e)
-    {
-        if (model.SelectedButton != null)
-        {
-            model.SelectedButton.Enabled = buttonEnabledCheckBox.Checked;
-            buttonProgramChangeInput.Enabled = buttonEnabledCheckBox.Checked;
             RefreshButtonOverviewItem(buttonOverviewListBox.SelectedIndex);
         }
     }
@@ -97,11 +105,6 @@ public partial class MainForm : Form
     private void ControlChannelInput_Leave(object? sender, EventArgs e)
     {
         controlChannelInput.DataBindings["Value"]?.WriteValue();
-    }
-
-    private void ButtonProgramChangeInput_Leave(object? sender, EventArgs e)
-    {
-        buttonProgramChangeInput.DataBindings["Value"]?.WriteValue();
     }
 
     private void ButtonOverviewListBox_SelectedIndexChanged(object? sender, EventArgs e)
@@ -123,13 +126,37 @@ public partial class MainForm : Form
         }
     }
 
+    private void RefreshTargetSelectionDropdown()
+    {
+        targetToolStripMenuItem.DropDown.Items.Clear();
+        foreach (string target in model.Targets)
+        {
+            Image? icon = model.SelectedTarget == target ? Icons.Checkmark : null;
+            targetToolStripMenuItem.DropDown.Items.Add(target, icon, OnSelectTarget_Clicked);
+        }
+    }
+
+    private void RefreshProgramChangeComboBoxItems()
+    {
+        programChangeComboBox.Items.Clear();
+        foreach (TargetProgramChangeItem item in model.ProgramChangeDictionary)
+        {
+            programChangeComboBox.Items.Add(item);
+        }
+    }
+
     private void RefreshButtonOverview()
     {
+        int index = buttonOverviewListBox.SelectedIndex;
+        buttonOverviewListBox.SelectedIndexChanged -= ButtonOverviewListBox_SelectedIndexChanged;
         buttonOverviewListBox.Items.Clear();
         foreach (ButtonConfigurationModel button in model.Device.Buttons)
         {
-            buttonOverviewListBox.Items.Add(RenderButtonConfigAsString(button));
+            buttonOverviewListBox.Items.Add(GetButtonOverviewItemText(button));
         }
+
+        buttonOverviewListBox.SelectedIndex = index;
+        buttonOverviewListBox.SelectedIndexChanged += ButtonOverviewListBox_SelectedIndexChanged;
     }
 
     private void RefreshButtonOverviewItem(int index)
@@ -139,7 +166,7 @@ public partial class MainForm : Form
 
         buttonOverviewListBox.SelectedIndexChanged -= ButtonOverviewListBox_SelectedIndexChanged;
         ButtonConfigurationModel button = model.Device.Buttons[index];
-        buttonOverviewListBox.Items[index] = RenderButtonConfigAsString(button);
+        buttonOverviewListBox.Items[index] = GetButtonOverviewItemText(button);
         buttonOverviewListBox.SelectedIndexChanged += ButtonOverviewListBox_SelectedIndexChanged;
     }
 
@@ -169,25 +196,45 @@ public partial class MainForm : Form
             serialPortStatusLabel.Text = model.SelectedPort;
             submitButton.Enabled = isSelected;
         }
+        else if (e.PropertyName == nameof(model.SelectedTarget))
+        {
+            selectedTargetStatusLabel.Text = model.SelectedTarget;
+            RefreshTargetSelectionDropdown();
+            RefreshProgramChangeComboBoxItems();
+            RefreshButtonOverview();
+        }
         else if (e.PropertyName == nameof(model.SelectedButton))
         {
             if (model.SelectedButton == null)
             {
-                buttonEnabledCheckBox.Checked = false;
-                buttonEnabledCheckBox.Enabled = false;
-                buttonProgramChangeInput.Value = 0;
-                buttonProgramChangeInput.Enabled = false;
-                selectedButtonStatusLabel.Text = "";
-                controlChannelInput.Enabled = false;
+                // controlChannelInput.Enabled = false;
+
+                removeProgramChangeButton.Enabled = false;
+                programChangeComboBox.Enabled = false;
+                programChangeComboBox.SelectedIndex = -1;
             }
             else
             {
-                buttonEnabledCheckBox.Checked = model.SelectedButton.Enabled;
-                buttonEnabledCheckBox.Enabled = true;
-                buttonProgramChangeInput.Value = model.SelectedButton.ProgramNumber;
-                buttonProgramChangeInput.Enabled = model.SelectedButton.Enabled;
+                programChangeComboBox.Enabled = true;
+                if (model.SelectedButton.Enabled)
+                {
+                    TargetProgramChangeItem? item = model.ProgramChangeDictionary.FirstOrDefault(i => i.ProgramNumber == model.SelectedButton.ProgramNumber);
+                    if (item == null)
+                    {
+                        programChangeComboBox.SelectedIndex = -1;
+                    }
+                    else
+                    {
+                        programChangeComboBox.SelectedItem = item;
+                    }
+                }
+                else
+                {
+                    programChangeComboBox.SelectedIndex = -1;
+                }
 
-                selectedButtonStatusLabel.Text = RenderButtonConfigName(model.SelectedButton.Index);
+                removeProgramChangeButton.Enabled = model.SelectedButton.Enabled;
+
                 buttonOverviewListBox.SelectedIndexChanged -= ButtonOverviewListBox_SelectedIndexChanged;
                 buttonOverviewListBox.SelectedIndex = model.SelectedButton.Index;
                 buttonOverviewListBox.SelectedIndexChanged += ButtonOverviewListBox_SelectedIndexChanged;
@@ -197,18 +244,32 @@ public partial class MainForm : Form
         Refresh();
     }
 
-    private static string RenderButtonConfigName(int index) => $"{(char)(65 + index)}";
+    private static string GetButtonName(int index) => $"{(char)(65 + index)}";
 
-    private static string RenderButtonConfigAsString(ButtonConfigurationModel button)
+    private string GetButtonOverviewItemText(ButtonConfigurationModel button)
     {
-        string name = RenderButtonConfigName(button.Index);
+        string buttonName = GetButtonName(button.Index);
+        IMidiCommand command = new MidiProgramChange(model.Device.ControlChannel, button.ProgramNumber);
         if (button.Enabled)
         {
-            return $"{name} PC {button.ProgramNumber}";
+            return $"{buttonName} {controller.GetNameOfCommand(command) ?? "Unknown"}";
         }
         else
         {
-            return $"{name} -";
+            return $"{buttonName} -";
+        }
+    }
+
+    private static string RenderMidiConfigAsString(ButtonConfigurationModel button)
+    {
+        string buttonName = GetButtonName(button.Index);
+        if (button.Enabled)
+        {
+            return $"PC {button.ProgramNumber}";
+        }
+        else
+        {
+            return $"-";
         }
     }
 
@@ -218,6 +279,11 @@ public partial class MainForm : Form
         {
             controller.DoBusyWork(() =>
                 controller.SearchForDevice());
+
+            if (model.Exception != null)
+            {
+                ShowErrorMessage(model.Exception);
+            }
         }
     }
 
@@ -229,7 +295,21 @@ public partial class MainForm : Form
             {
                 controller.DoBusyWork(() =>
                     controller.SelectDevice(item.Text));
+
+                if (model.Exception != null)
+                {
+                    ShowErrorMessage(model.Exception);
+                }
             }
+        }
+    }
+
+    private void OnSelectTarget_Clicked(object? sender, EventArgs args)
+    {
+        if (sender is ToolStripItem item)
+        {
+            controller.SelectTarget(item.Text ?? "");
+            controller.SaveSettings();
         }
     }
 
@@ -237,6 +317,11 @@ public partial class MainForm : Form
     {
         controller.DoBusyWork(() =>
             controller.WriteConfigurationToDevice());
+
+        if (model.Exception != null)
+        {
+            ShowErrorMessage(model.Exception);
+        }
     }
 
     private void closeButton_Click(object sender, EventArgs e)
@@ -256,4 +341,24 @@ public partial class MainForm : Form
         return true;
     }
 
+    private void ShowErrorMessage(Exception exception)
+    {
+        ErrorBox box = new ErrorBox(exception);
+        box.ShowDialog();
+    }
+
+    private void MainForm_Load(object sender, EventArgs e)
+    {
+
+    }
+
+    private void removeProgramChangeButton_Click_1(object sender, EventArgs e)
+    {
+
+    }
+
+    private void programChangeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
 }
