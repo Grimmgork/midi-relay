@@ -71,13 +71,12 @@ partial class MainForm
         toolStripStatusLabel.Name = "toolStripStatusLabel";
         toolStripStatusLabel.Size = new Size(53, 25);
         toolStripStatusLabel.Text = "Hello";
-        toolStripStatusLabel.ToolTipText = "Error occured";
         // 
         // serialPortStatusLabel
         // 
         serialPortStatusLabel.Name = "serialPortStatusLabel";
-        serialPortStatusLabel.Size = new Size(65, 25);
-        serialPortStatusLabel.Text = "adawd";
+        serialPortStatusLabel.Size = new Size(46, 25);
+        serialPortStatusLabel.Text = "port";
         // 
         // selectedTargetStatusLabel
         // 
@@ -90,7 +89,7 @@ partial class MainForm
         // spacerStatusLabel
         // 
         spacerStatusLabel.Name = "spacerStatusLabel";
-        spacerStatusLabel.Size = new Size(426, 25);
+        spacerStatusLabel.Size = new Size(445, 25);
         spacerStatusLabel.Spring = true;
         // 
         // menuStrip1
@@ -169,9 +168,9 @@ partial class MainForm
         label2.AutoSize = true;
         label2.Location = new Point(308, 101);
         label2.Name = "label2";
-        label2.Size = new Size(141, 25);
+        label2.Size = new Size(146, 25);
         label2.TabIndex = 44;
-        label2.Text = "ProgramChange";
+        label2.Text = "Program Change";
         // 
         // programChangeComboBox
         // 
@@ -184,7 +183,6 @@ partial class MainForm
         programChangeComboBox.Name = "programChangeComboBox";
         programChangeComboBox.Size = new Size(293, 33);
         programChangeComboBox.TabIndex = 3;
-        programChangeComboBox.SelectedIndexChanged += programChangeComboBox_SelectedIndexChanged;
         // 
         // buttonOverviewListBox
         // 
@@ -229,7 +227,6 @@ partial class MainForm
         removeProgramChangeButton.TabIndex = 4;
         removeProgramChangeButton.Text = "Remove";
         removeProgramChangeButton.UseVisualStyleBackColor = true;
-        removeProgramChangeButton.Click += removeProgramChangeButton_Click_1;
         // 
         // MainForm
         // 
@@ -253,7 +250,6 @@ partial class MainForm
         MinimumSize = new Size(499, 347);
         Name = "MainForm";
         Text = "MIDI-Relay v0.1.2 pa5x";
-        Load += MainForm_Load;
         statusStrip1.ResumeLayout(false);
         statusStrip1.PerformLayout();
         menuStrip1.ResumeLayout(false);

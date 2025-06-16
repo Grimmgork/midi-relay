@@ -11,7 +11,7 @@ public partial class MainForm : Form
     private readonly string windowTitle = "EC5 MIDI Controller";
     private readonly string version = "v0.1";
 
-    private MainViewModel model;
+    private MainModel model;
     private MainController controller;
 
     public MainForm()
@@ -19,7 +19,7 @@ public partial class MainForm : Form
         InitializeComponent();
         Text = $"{windowTitle} - {version}";
 
-        model = new MainViewModel();
+        model = new MainModel();
         controller = new MainController(model, "settings.json");
 
         model.PropertyChanged += ViewModel_PropertyChanged;
@@ -87,11 +87,7 @@ public partial class MainForm : Form
     {
         if (sender is ComboBox comboBox && model.SelectedButton != null)
         {
-            if (comboBox.SelectedItem == null)
-            {
-                model.SelectedButton.Enabled = false;
-            }
-            else
+            if (comboBox.SelectedItem != null)
             {
                 model.SelectedButton.Enabled = true;
                 model.SelectedButton.ProgramNumber = ((TargetProgramChangeItem)comboBox.SelectedItem).ProgramNumber;
@@ -155,6 +151,11 @@ public partial class MainForm : Form
             buttonOverviewListBox.Items.Add(GetButtonOverviewItemText(button));
         }
 
+        if (index >= buttonOverviewListBox.Items.Count)
+        {
+            index = -1;
+        }
+
         buttonOverviewListBox.SelectedIndex = index;
         buttonOverviewListBox.SelectedIndexChanged += ButtonOverviewListBox_SelectedIndexChanged;
     }
@@ -190,7 +191,7 @@ public partial class MainForm : Form
         }
         else if (e.PropertyName == nameof(model.SelectedPort))
         {
-            RefreshDeviceSelectionDropdown();
+            // RefreshDeviceSelectionDropdown();
             bool isSelected = model.SelectedPort != null;
             controlChannelInput.Enabled = isSelected;
             serialPortStatusLabel.Text = model.SelectedPort;
@@ -249,10 +250,9 @@ public partial class MainForm : Form
     private string GetButtonOverviewItemText(ButtonConfigurationModel button)
     {
         string buttonName = GetButtonName(button.Index);
-        IMidiCommand command = new MidiProgramChange(model.Device.ControlChannel, button.ProgramNumber);
         if (button.Enabled)
         {
-            return $"{buttonName} {controller.GetNameOfCommand(command) ?? "Unknown"}";
+            return $"{buttonName} {GetProgramChangeName(button.ProgramNumber) ?? "Unknown"}";
         }
         else
         {
@@ -260,17 +260,10 @@ public partial class MainForm : Form
         }
     }
 
-    private static string RenderMidiConfigAsString(ButtonConfigurationModel button)
+    private string? GetProgramChangeName(byte programNumber)
     {
-        string buttonName = GetButtonName(button.Index);
-        if (button.Enabled)
-        {
-            return $"PC {button.ProgramNumber}";
-        }
-        else
-        {
-            return $"-";
-        }
+        IMidiCommand command = new MidiProgramChange(model.Device.ControlChannel, programNumber);
+        return controller.GetNameOfCommand(command);
     }
 
     private void OnSearchDevice_Clicked(object? sender, EventArgs args)
@@ -345,20 +338,5 @@ public partial class MainForm : Form
     {
         ErrorBox box = new ErrorBox(exception);
         box.ShowDialog();
-    }
-
-    private void MainForm_Load(object sender, EventArgs e)
-    {
-
-    }
-
-    private void removeProgramChangeButton_Click_1(object sender, EventArgs e)
-    {
-
-    }
-
-    private void programChangeComboBox_SelectedIndexChanged(object sender, EventArgs e)
-    {
-
     }
 }

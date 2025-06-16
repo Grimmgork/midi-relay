@@ -9,7 +9,7 @@ namespace gui
 {
     public class MainController
     {
-        private MainViewModel model;
+        private MainModel model;
         private string settingsFile;
         private JsonSerializerOptions serializerOptions = new JsonSerializerOptions() { 
             PropertyNameCaseInsensitive = true 
@@ -17,7 +17,7 @@ namespace gui
 
         private Settings settings = new Settings();
 
-        public MainController(MainViewModel model, string settingsFile)
+        public MainController(MainModel model, string settingsFile)
         {
             this.model = model;
             this.settingsFile = settingsFile;
@@ -35,7 +35,7 @@ namespace gui
 
             settings = LoadSettingsFromFile(settingsFile, new Settings()
             {
-                ControlChannel = 1,
+                ControlChannel = 0,
                 Target = model.Targets.First(),
                 SerialPort = model.Ports.First()
             });
@@ -156,6 +156,9 @@ namespace gui
             {
                 model.State = ApplicationState.Error;
                 model.Exception = ex;
+#if (DEBUG)
+                throw;
+#endif
             }
         }
 

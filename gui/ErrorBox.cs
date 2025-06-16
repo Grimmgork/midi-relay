@@ -12,11 +12,8 @@ namespace gui
 {
     public partial class ErrorBox : Form
     {
-        private Exception exception;
-
         public ErrorBox(Exception exception)
         {
-            this.exception = exception;
             InitializeComponent();
             messageTextBox.Text = exception.Message;
         }
