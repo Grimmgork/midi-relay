@@ -9,7 +9,7 @@ namespace gui;
 public partial class MainForm : Form
 {
     private readonly string windowTitle = "EC5 MIDI Controller";
-    private readonly string version = "v0.1";
+    private readonly string version = "v1.1";
 
     private MainModel model;
     private MainController controller;
@@ -40,11 +40,18 @@ public partial class MainForm : Form
         controlChannelInput.Leave += ControlChannelInput_Leave;
 
         FormClosing += MainForm_FormClosing;
+        HelpButtonClicked += MainForm_HelpRequested;
 
         controller.SelectButton(-1);
         controller.SelectDevice(null);
 
         RefreshProgramChangeComboBoxItems();
+    }
+
+    private void MainForm_HelpRequested(object? sender, EventArgs hlpevent)
+    {
+        HelpBox dialog = new HelpBox();
+        dialog.ShowDialog();
     }
 
     private void RemoveProgramChangeButton_Click(object? sender, EventArgs e)
@@ -191,11 +198,12 @@ public partial class MainForm : Form
         }
         else if (e.PropertyName == nameof(model.SelectedPort))
         {
-            // RefreshDeviceSelectionDropdown();
+            RefreshDeviceSelectionDropdown();
             bool isSelected = model.SelectedPort != null;
             controlChannelInput.Enabled = isSelected;
             serialPortStatusLabel.Text = model.SelectedPort;
             submitButton.Enabled = isSelected;
+            programChangeComboBox.Enabled = isSelected;
         }
         else if (e.PropertyName == nameof(model.SelectedTarget))
         {
@@ -241,8 +249,6 @@ public partial class MainForm : Form
                 buttonOverviewListBox.SelectedIndexChanged += ButtonOverviewListBox_SelectedIndexChanged;
             }
         }
-
-        Refresh();
     }
 
     private static string GetButtonName(int index) => $"{(char)(65 + index)}";

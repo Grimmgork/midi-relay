@@ -157,7 +157,7 @@ namespace gui
                 model.State = ApplicationState.Error;
                 model.Exception = ex;
 #if (DEBUG)
-                throw;
+                // throw;
 #endif
             }
         }

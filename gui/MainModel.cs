@@ -23,8 +23,8 @@ namespace gui
         private DeviceConfigurationModel _device = new DeviceConfigurationModel();
         private ApplicationState _state;
         private string? _errorMessage;
-        private string[] _ports = [];
-        private string[] _targets = [];
+        private string[] _ports = new string[] {};
+        private string[] _targets = new string[] {};
         private ButtonConfigurationModel? _selectedButton;
         private string? _selectedTarget;
         private List<TargetProgramChangeItem> _programChangeItems = new List<TargetProgramChangeItem>();

@@ -187,13 +187,13 @@ partial class MainForm
         // buttonOverviewListBox
         // 
         buttonOverviewListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-        buttonOverviewListBox.Font = new Font("Consolas", 9F);
+        buttonOverviewListBox.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
         buttonOverviewListBox.FormattingEnabled = true;
         buttonOverviewListBox.IntegralHeight = false;
         buttonOverviewListBox.ItemHeight = 22;
         buttonOverviewListBox.Location = new Point(12, 93);
         buttonOverviewListBox.Name = "buttonOverviewListBox";
-        buttonOverviewListBox.Size = new Size(286, 180);
+        buttonOverviewListBox.Size = new Size(286, 227);
         buttonOverviewListBox.TabIndex = 2;
         // 
         // submitButton
@@ -245,8 +245,10 @@ partial class MainForm
         Controls.Add(statusStrip1);
         Controls.Add(menuStrip1);
         FormBorderStyle = FormBorderStyle.FixedDialog;
+        HelpButton = true;
         MainMenuStrip = menuStrip1;
         MaximizeBox = false;
+        MinimizeBox = false;
         MinimumSize = new Size(499, 347);
         Name = "MainForm";
         Text = "MIDI-Relay v0.1.2 pa5x";
