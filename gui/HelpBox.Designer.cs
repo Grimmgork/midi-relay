@@ -35,9 +35,10 @@
             // closeButton
             // 
             closeButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            closeButton.Location = new Point(292, 287);
+            closeButton.Location = new Point(380, 367);
+            closeButton.Margin = new Padding(4, 4, 4, 4);
             closeButton.Name = "closeButton";
-            closeButton.Size = new Size(112, 34);
+            closeButton.Size = new Size(146, 44);
             closeButton.TabIndex = 0;
             closeButton.Text = "Close";
             closeButton.UseVisualStyleBackColor = true;
@@ -45,23 +46,25 @@
             // textBox1
             // 
             textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBox1.Location = new Point(12, 12);
+            textBox1.Location = new Point(16, 15);
+            textBox1.Margin = new Padding(4, 4, 4, 4);
             textBox1.Multiline = true;
             textBox1.Name = "textBox1";
             textBox1.ReadOnly = true;
             textBox1.ScrollBars = ScrollBars.Vertical;
-            textBox1.Size = new Size(392, 269);
+            textBox1.Size = new Size(508, 343);
             textBox1.TabIndex = 1;
-            textBox1.Text = "(C) KEO Music 2025\r\n\r\nKarl Eike Oppermann\r\nUdenbörner Str. 2\r\n34582 Borken (Hessen)\r\nkarl-eike.oppermann@t-online.de\r\n\r\nDeveloper:\r\nEric Armbruster\r\nericarmbruster@gmx.de";
+            textBox1.Text = "(C) KEO Music 2024\r\n\r\nKarl Eike Oppermann\r\nUdenbörner Str. 2\r\n34582 Borken (Hessen)\r\nkarl-eike.oppermann@t-online.de\r\n\r\nDeveloper:\r\nEric Armbruster\r\nericarmbruster@gmx.de";
             // 
             // HelpBox
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(416, 333);
+            ClientSize = new Size(541, 426);
             Controls.Add(textBox1);
             Controls.Add(closeButton);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            Margin = new Padding(4, 4, 4, 4);
             Name = "HelpBox";
             StartPosition = FormStartPosition.CenterParent;
             Text = "About";

@@ -35,16 +35,16 @@
     <None Update="ressources\check-line.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ressources\targets\pa1000.json">
+    <None Update="Ressources\targets\2_pa1000.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ressources\targets\pa5x.json">
+    <None Update="Ressources\targets\3_pa5x.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ressources\menu-search-line.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ressources\targets\pa700.json">
+    <None Update="Ressources\targets\1_pa700.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

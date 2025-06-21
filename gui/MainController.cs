@@ -3,12 +3,14 @@ using gui.Model;
 using gui.Protocol;
 using System.IO.Ports;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace gui
 {
     public class MainController
     {
+        private Regex targetFileMatch = new Regex("(?:[0-9]+_)?([a-zA-Z_\\-0-9.]+).json$");
         private MainModel model;
         private string settingsFile;
         private JsonSerializerOptions serializerOptions = new JsonSerializerOptions() { 
@@ -37,7 +39,7 @@ namespace gui
             {
                 ControlChannel = 0,
                 Target = model.Targets.First(),
-                SerialPort = model.Ports.First()
+                SerialPort = null
             });
 
             model.Device.ControlChannel = settings.ControlChannel;
@@ -81,12 +83,19 @@ namespace gui
             return settings;
         }
 
-        private static IEnumerable<string> FetchAvailableTargets()
+        private IEnumerable<string> FetchAvailableTargets()
         {
-            if (!Directory.Exists("ressources/targets"))
-                return new string[] {};
-
-            return Directory.GetFiles("ressources/targets").Where(path => path.EndsWith(".json")).Select(name => Path.GetFileNameWithoutExtension(name));
+            if (Directory.Exists("ressources/targets"))
+            {
+                foreach (string name in Directory.GetFiles("ressources/targets").Order())
+                {
+                    Match match = targetFileMatch.Match(name);
+                    if (match.Success)
+                    {
+                        yield return match.Groups[1].Value;
+                    }
+                }
+            }
         }
 
         public void SelectTarget(string target)
@@ -94,7 +103,24 @@ namespace gui
             if (!model.Targets.Contains(target))
                 throw new InvalidOperationException();
 
-            string targetFileText = File.ReadAllText($"ressources/targets/{target}.json");
+            string? targetFileName = null;
+            IEnumerable<string> files = Directory.GetFiles("ressources/targets");
+            foreach (string file in files)
+            {
+                Match match = targetFileMatch.Match(file);
+                if (match.Success && match.Groups[1].Value == target)
+                {
+                    targetFileName = file;
+                    break;
+                }
+            }
+
+            if (targetFileName == null)
+            {
+                throw new Exception($"file for target {target} not found.");
+            }
+
+            string targetFileText = File.ReadAllText(targetFileName);
             TargetProgramChangeItem[] items = new TargetProgramChangeItem[] { };
             items = JsonSerializer.Deserialize<TargetProgramChangeItem[]>(targetFileText, serializerOptions) ?? throw new Exception($"Invalid content of {target}.json file");
 
@@ -156,9 +182,6 @@ namespace gui
             {
                 model.State = ApplicationState.Error;
                 model.Exception = ex;
-#if (DEBUG)
-                // throw;
-#endif
             }
         }
 

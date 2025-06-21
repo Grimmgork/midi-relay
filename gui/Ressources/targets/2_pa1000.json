@@ -37,10 +37,6 @@
   },
   {
     "ProgramNumber": 89,
-    "Name": "Fill 2"
-  },
-  {
-    "ProgramNumber": 90,
     "Name": "Fill 3"
   },
   {
@@ -93,6 +89,10 @@
   },
   {
     "ProgramNumber": 104,
-    "Name": "Play/Stop Player"
+    "Name": "Play/Stop Player 1"
+  },
+  {
+    "ProgramNumber": 105,
+    "Name": "Play/Stop Player 2"
   }
 ]
